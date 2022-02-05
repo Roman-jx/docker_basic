@@ -1,0 +1,9 @@
+h1{
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  font-weight: bold;
+  font-size: 20px;
+  text-align: center;
+} p{
+  text-decoration: line-through;
+  font-style: italic;
+}
