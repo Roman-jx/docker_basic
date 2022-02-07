@@ -1,10 +1,4 @@
 FROM php:7.2-apache
-COPY file1.php /file1.php
-RUN chmod +x /file1.php
-ENTRYPOINT ["php", "/file1.php"]
-CMD ["9"]
+RUN apt-get update && apt-get upgrade -y
 
-# ---------Instr--------------
-# docker build . --tag pyramid
-# docker run pyramid <int>
 

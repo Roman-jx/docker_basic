@@ -1,26 +1,45 @@
-version: '3.8'
+version: '3'
 services:
-    php-apache-environment:
-        container_name: php-apache
-        build:
-            context: ./php
-            dockerfile: Dockerfile
-        depends_on:
-            - db
-        volumes:
-            - ./php/src:/var/www/html/
-        ports:
-            - 8000:80
-  # traefik:
-  #   image: "traefik:v2.6"
-  #   container_name: "traefik"
-  #   command:
-  #     - "--api.insecure=true"
-  #     - "--providers.docker=true"
-  #     - "--providers.docker.exposedbydefault=false"
-  #     - "--entrypoints.web.address=:80"
-  #   ports:
-  #     - "80:80"
-  #     - "8080:8080"
-  #   volumes:
-  #     - "/var/run/docker.sock:/var/run/docker.sock:ro"
+  apache:
+    image: httpd:${HTTPD_VERSION}
+    container_name: apache_test1
+    volumes:
+      - ./src:/var/www/html
+      - ./httpd/httpd.conf:/usr/local/apache2/conf/httpd.conf
+    depends_on:
+      - php
+db:
+    image: mysql:${MYSQL_VERSION}
+    container_name: db
+    environment:
+      MYSQL_ROOT_PASSWORD: qwerty
+      MYSQL_DATABASE: app_db
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+    volumes:
+      - dbdata:/var/lib/mysql
+phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin_test2
+    links:
+      - db
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+    restart: always
+    labels:
+      - "traefik.http.routers.phpmyadmin.rule=Host(`phpmyadmin.site.localhost`)"
+      - "traefik.http.services.phpmyadmin.loadbalancer.server.port=80"
+traefik:
+    image: traefik:v2.3
+    command:
+      - --log.level=INFO
+      - --api.insecure=true
+      - --entrypoints.web.address=:80
+      - --providers.docker
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "8080:8080"
+      - "80:80"
