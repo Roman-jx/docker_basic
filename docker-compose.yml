@@ -1,23 +1,21 @@
 version: '3'
 services:
   apache:
-    image: httpd:${HTTPD_VERSION}
+    image: httpd
     container_name: apache_test1
     volumes:
       - ./src:/var/www/html
-      - ./httpd/httpd.conf:/usr/local/apache2/conf/httpd.conf
-    depends_on:
-      - php
+    labels:
+      - "traefik.http.routers.apache.rule=Host(`web.site.localhost`)"
+      - "traefik.http.services.apache.loadbalancer.server.port=80"
 db:
-    image: mysql:${MYSQL_VERSION}
+    image: mysql
     container_name: db
     environment:
       MYSQL_ROOT_PASSWORD: qwerty
       MYSQL_DATABASE: app_db
       MYSQL_USER: root
       MYSQL_PASSWORD: root
-    volumes:
-      - dbdata:/var/lib/mysql
 phpmyadmin:
     image: phpmyadmin/phpmyadmin
     container_name: phpmyadmin_test2
