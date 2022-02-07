@@ -7,13 +7,6 @@
 	<title>Document</title>
 </head>
 <body>
-	<h1>
-	<?php
-	$n = $i = $argv[1] ?? 5;
-	while ($i--){
-		echo str_repeat(' ', $i).str_repeat("* ", $n - $i)."\n";
-	}
-	?>
-	</h1>
+	<h1>Hello, world!</h1>
 </body>
 </html>
